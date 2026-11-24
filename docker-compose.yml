@@ -1,0 +1,20 @@
+# Optional: MySQL 8 in Docker, for anyone without a local MySQL install.
+# Start it with:  docker compose up -d db
+# Then create the app users with:  npm run db:create-users
+services:
+  db:
+    image: mysql:8.4
+    container_name: fruita-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpass}
+      # Spec A12: all times are Pakistan time
+      TZ: Asia/Karachi
+    command: ['--default-time-zone=+05:00']
+    ports:
+      - '3306:3306'
+    volumes:
+      - fruita-mysql-data:/var/lib/mysql
+
+volumes:
+  fruita-mysql-data:

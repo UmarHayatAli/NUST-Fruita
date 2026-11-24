@@ -1,0 +1,49 @@
+name: CI
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_ROOT_PASSWORD: rootpass
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -prootpass"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+
+    # CI-only throwaway values; real secrets live in each developer's .env.
+    env:
+      NODE_ENV: test
+      PORT: 4000
+      DB_HOST: 127.0.0.1
+      DB_PORT: 3306
+      DB_NAME: fruita
+      DB_NAME_TEST: fruita_test
+      DB_APP_USER: fruita_app
+      DB_APP_PASSWORD: ci_app_pw
+      DB_MIGRATOR_USER: fruita_migrator
+      DB_MIGRATOR_PASSWORD: ci_migrator_pw
+      JWT_SECRET: ci_only_secret_0123456789abcdef0123456789abcdef
+      MYSQL_ROOT_PASSWORD: rootpass
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run format:check
+      - run: npm run db:create-users
+      - run: npm test
+      - run: npm run build

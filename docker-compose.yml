@@ -10,7 +10,8 @@ services:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD:-rootpass}
       # Spec A12: all times are Pakistan time
       TZ: Asia/Karachi
-    command: ['--default-time-zone=+05:00']
+    # Trigger creation without SUPER (see db/scripts/create-users.js, DECISIONS D9)
+    command: ['--default-time-zone=+05:00', '--log-bin-trust-function-creators=1']
     ports:
       - '3306:3306'
     volumes:

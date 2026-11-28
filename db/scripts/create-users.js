@@ -61,6 +61,11 @@ try {
     ]);
   }
 
+  // With binary logging on (the MySQL 8 default), only accounts with the SUPER privilege
+  // may create triggers unless this setting is on. Turning it on is safer than giving
+  // fruita_migrator SUPER. PERSIST keeps it after a MySQL restart. (DECISIONS D9)
+  await root.query('SET PERSIST log_bin_trust_function_creators = 1');
+
   console.log(
     `Created databases ${dbName}, ${testDbName} and users`,
     accounts.map((a) => a.user)

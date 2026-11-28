@@ -40,6 +40,16 @@ person explains their own area line by line.
 
 **Shared by everyone:** `shared/` (validation rules and constants), and tests for your own area.
 
+**Team status (2026-11-28):** all three members have access to the GitHub repository. Umar's laptop
+is fully set up (Phase 0 verified). Tehreem and Aimen set up their laptops by following
+[sections 3 and 4](#3-install-the-tools-once-per-laptop).
+
+| Member         | GitHub access | Laptop setup (sections 3–4) |
+| -------------- | ------------- | --------------------------- |
+| Umar Hayat Ali | ✅ Owner      | ✅ Done                     |
+| Tehreem        | ✅ Accepted   | In progress                 |
+| Aimen          | ✅ Accepted   | In progress                 |
+
 ## 2. How the three of us share work
 
 - **GitHub holds all the code**: frontend (`web/`), backend (`server/`) and database (`db/`).

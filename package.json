@@ -18,7 +18,9 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "db:create-users": "node db/scripts/create-users.js"
+    "db:create-users": "node db/scripts/create-users.js",
+    "db:migrate": "node db/scripts/migrate.js",
+    "db:reset": "node db/scripts/reset.js"
   },
   "devDependencies": {
     "@eslint/js": "^9.17.0",

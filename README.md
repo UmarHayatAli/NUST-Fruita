@@ -8,7 +8,95 @@ Database Systems semester project.
 - Decisions where the spec was unclear: [docs/DECISIONS.md](docs/DECISIONS.md)
 - What has been built so far: [docs/PROGRESS.md](docs/PROGRESS.md)
 
+## Current status
+
+_Last updated: 2026-11-28. This section is updated after every step, so it always shows where
+the project is._
+
+**Now:** Phase 1 (the database) is in progress on the branch **`feat/p1-database`**. Umar is
+building it. It is merged into `main` when the Phase 1 checklist passes. Until then, `main` only
+has Phase 0.
+
+| Phase 1 step | What it adds                                                                              | Status  |
+| ------------ | ----------------------------------------------------------------------------------------- | ------- |
+| 1            | Database builder (`npm run db:migrate`, `npm run db:reset`) and the 17 tables (V010–V070) | ✅ Done |
+| 2            | The 10 triggers (V080)                                                                    | ✅ Done |
+| 3            | The 10 stored procedures (V085): place order, cancel, claim, pickup, code, fail, …        | ⏳ Next |
+| 4            | The 8 views (V090) for checkout slots, alerts and statistics                              |         |
+| 5            | Demo data: 25 fruits, 12 hostels, test accounts, 30 orders                                |         |
+| 6            | Database tests (spec T07–T38)                                                             |         |
+| 7            | ERD picture, docs, merge into `main`                                                      |         |
+
+**Recent changes that affect your laptop**
+
+- 2026-11-28: `npm run db:create-users` now also turns on a MySQL setting needed to create
+  triggers. Run it once more (step C3 below), otherwise `db:reset` fails with a "SUPER privilege"
+  error.
+
+## Catch up to where Umar is
+
+Do [sections 3 and 4](#3-install-the-tools-once-per-laptop) first (one-time setup). Then run
+these in the VS Code terminal, inside the `NUST-Fruita` folder.
+
+**C1. Get the latest work**
+
+```powershell
+git checkout main
+git pull
+git checkout feat/p1-database
+git pull
+```
+
+The first `git checkout feat/p1-database` downloads the branch to your laptop. After Phase 1 is
+merged, C1 is just `git checkout main` and `git pull`.
+
+**C2. Install any new packages**
+
+```powershell
+npm install
+```
+
+**C3. Re-run the database account script** (use your own MySQL root password)
+
+```powershell
+$env:MYSQL_ROOT_PASSWORD='your-root-password'; npm run db:create-users
+```
+
+**C4. Build the database**
+
+```powershell
+npm run db:reset
+```
+
+Good result: a list of `applied V0xx__...sql` lines ending with `fruita: 8 migration(s) applied`.
+
+**C5. Look at it in MySQL Workbench** (optional)
+
+Open your connection, expand the **`fruita`** database, then **Tables**: you should see the 17
+tables plus `schema_migrations`. To count the triggers, run this in a query tab (should print
+`10`):
+
+```sql
+SELECT COUNT(*) FROM information_schema.triggers WHERE trigger_schema = 'fruita';
+```
+
+**C6. Read your own area's database code** (for the viva)
+
+| Member  | Files to read in `db/migrations/`                                                                                                                                      |
+| ------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Umar    | `V050__slots_orders.sql`, `V060__payments_deliveries.sql`, `order_status_history` in `V070`; triggers `trg_orders_ai/au`, `trg_order_items_bi` in `V080`               |
+| Tehreem | `V030__catalog.sql`, `site_settings` in `V040`, `reviews` in `V070`; triggers `trg_products_bi/bu`, `trg_categories_bu`, `trg_reviews_bi` in `V080`                    |
+| Aimen   | `V010__users_riders_hostels.sql`, `V020__addresses.sql`, `carts`, `cart_items`, `wishlist_items` in `V040`; triggers `trg_riders_bi`, `trg_cart_items_bi/bu` in `V080` |
+
+Every table and trigger has comments explaining why it exists. Ask Umar about anything unclear.
+
+**Important:** `feat/p1-database` is Umar's work-in-progress branch. Look and run, but don't
+commit to it. To go back to `main`: `git checkout main`.
+
 ## Contents
+
+- [Current status](#current-status)
+- [Catch up to where Umar is](#catch-up-to-where-umar-is)
 
 1. [Team and division of work](#1-team-and-division-of-work)
 2. [How the three of us share work](#2-how-the-three-of-us-share-work)
@@ -56,7 +144,7 @@ is fully set up (Phase 0 verified). Tehreem and Aimen set up their laptops by fo
 - **The database is never copied between laptops.** Each person installs MySQL on their own
   laptop. The whole database (tables, triggers, procedures, views and demo data) is written as
   SQL files in `db/`. Running `npm run db:reset` builds exactly the same database on any laptop.
-  (`db:reset` arrives in Phase 1.)
+  (`db:reset` is on the branch `feat/p1-database` now and reaches `main` when Phase 1 is merged.)
 - **`.env` is private.** It holds your own passwords and is never uploaded. Each person creates
   their own.
 - **Test orders you create while clicking around stay on your laptop.** Everyone gets the same
@@ -220,13 +308,15 @@ Database: ok"**. Press **Ctrl+C** in the terminal to stop.
 
 ### Step 4.7: Build the database (from Phase 1 onward)
 
-Once Phase 1 is merged, also run:
+While Phase 1 is in progress, follow [Catch up to where Umar is](#catch-up-to-where-umar-is).
+Once Phase 1 is merged, run:
 
 ```powershell
 npm run db:reset
 ```
 
-This creates all 17 tables, triggers, procedures and views and loads the demo data.
+This creates all 17 tables, triggers, procedures and views and loads the demo data. Run it again
+whenever a `git pull` brings changes in `db/`.
 
 ## 5. Daily workflow
 
@@ -262,7 +352,8 @@ Then on GitHub:
 
 ## 6. Team rules
 
-1. **Never work directly on `main`.** Always use a branch and a pull request.
+1. **Code goes through a branch and a pull request**, never straight to `main`. Small README or
+   docs updates may go straight to `main`.
 2. **Never commit `.env`.** It is already ignored by Git; don't force-add it.
 3. **Never edit a database migration that is already merged.** Add a new numbered file instead.
    Claim the number in the group chat first (V100, V110, V120, ...) so two people don't use the
@@ -277,19 +368,19 @@ Then on GitHub:
 
 ## 7. Build phases and owners
 
-| Phase | Goal                                                                                       | Owner                                                              | Status               |
-| ----- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------ | -------------------- |
-| P0    | Repository, tooling, MySQL, CI                                                             | Umar                                                               | Done (merged, PR #1) |
-| P1    | Full database: 17 tables, triggers, procedures, views, seed data, DB tests                 | All three (Umar builds; Tehreem and Aimen review their own tables) | Next                 |
-| P2    | Login, register, roles, layouts, forced password change; shared UI components              | Aimen                                                              |                      |
-| P3    | Shop, product page, admin products and categories, image upload                            | Tehreem                                                            |                      |
-| P4    | Addresses and cart (Aimen); checkout, place and cancel order, my orders (Umar)             | Aimen + Umar                                                       |                      |
-| P5    | Admin order handling, rider portal, delivery code, failed delivery                         | Umar                                                               |                      |
-| P6    | Admin users, riders, hostels (Aimen); slots, alerts, statistics (Umar); settings (Tehreem) | All three                                                          |                      |
-| P7    | Reviews and ratings (Tehreem); wishlist (Aimen)                                            | Tehreem + Aimen                                                    |                      |
-| P8    | Animated landing page (can start from week 4)                                              | Tehreem                                                            |                      |
-| P9    | Security checks, full tests, accessibility, performance                                    | All three                                                          |                      |
-| P10   | README, report, demo rehearsal                                                             | All three                                                          |                      |
+| Phase | Goal                                                                                       | Owner                                                              | Status                                                       |
+| ----- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------ | ------------------------------------------------------------ |
+| P0    | Repository, tooling, MySQL, CI                                                             | Umar                                                               | Done (merged, PR #1)                                         |
+| P1    | Full database: 17 tables, triggers, procedures, views, seed data, DB tests                 | All three (Umar builds; Tehreem and Aimen review their own tables) | In progress (branch `feat/p1-database`): steps 1–2 of 7 done |
+| P2    | Login, register, roles, layouts, forced password change; shared UI components              | Aimen                                                              |                                                              |
+| P3    | Shop, product page, admin products and categories, image upload                            | Tehreem                                                            |                                                              |
+| P4    | Addresses and cart (Aimen); checkout, place and cancel order, my orders (Umar)             | Aimen + Umar                                                       |                                                              |
+| P5    | Admin order handling, rider portal, delivery code, failed delivery                         | Umar                                                               |                                                              |
+| P6    | Admin users, riders, hostels (Aimen); slots, alerts, statistics (Umar); settings (Tehreem) | All three                                                          |                                                              |
+| P7    | Reviews and ratings (Tehreem); wishlist (Aimen)                                            | Tehreem + Aimen                                                    |                                                              |
+| P8    | Animated landing page (can start from week 4)                                              | Tehreem                                                            |                                                              |
+| P9    | Security checks, full tests, accessibility, performance                                    | All three                                                          |                                                              |
+| P10   | README, report, demo rehearsal                                                             | All three                                                          |                                                              |
 
 Every phase ends with a checklist from spec section 15. A phase is finished only when its
 checklist passes, CI is green, and `docs/PROGRESS.md` is updated.
@@ -298,16 +389,17 @@ checklist passes, CI is green, and `docs/PROGRESS.md` is updated.
 
 Run these from the project folder.
 
-| Script                    | Does                                                          |
-| ------------------------- | ------------------------------------------------------------- |
-| `npm install`             | Installs all packages                                         |
-| `npm run dev`             | Starts the API (port 4000) and the web app (port 5173)        |
-| `npm test`                | Runs all automated tests                                      |
-| `npm run lint`            | Checks code style problems                                    |
-| `npm run format`          | Auto-formats all files                                        |
-| `npm run build`           | Builds the web app into `web/dist`                            |
-| `npm run db:create-users` | Creates the `fruita_app` and `fruita_migrator` MySQL accounts |
-| `npm run db:reset`        | Deletes and rebuilds the database with demo data (Phase 1)    |
+| Script                    | Does                                                              |
+| ------------------------- | ----------------------------------------------------------------- |
+| `npm install`             | Installs all packages                                             |
+| `npm run dev`             | Starts the API (port 4000) and the web app (port 5173)            |
+| `npm test`                | Runs all automated tests                                          |
+| `npm run lint`            | Checks code style problems                                        |
+| `npm run format`          | Auto-formats all files                                            |
+| `npm run build`           | Builds the web app into `web/dist`                                |
+| `npm run db:create-users` | Creates the `fruita_app` and `fruita_migrator` MySQL accounts     |
+| `npm run db:migrate`      | Runs only the new database migration files                        |
+| `npm run db:reset`        | Deletes and rebuilds the database (demo data from Phase 1 step 5) |
 
 ## 9. Folder structure
 
@@ -322,15 +414,17 @@ docs/      specification, decisions, progress
 
 ## 10. Troubleshooting
 
-| Problem                                         | Fix                                                                                                                                                                                                                                                                                                                                 |
-| ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `'git'`, `'node'` or `'code'` is not recognized | Close PowerShell (and VS Code), open it again. If it still fails, reinstall the tool                                                                                                                                                                                                                                                |
-| `Get-Service *mysql*` shows `Stopped`           | Open PowerShell **as Administrator** and run `Start-Service <name>` (use the name shown, for example `MySQL80`)                                                                                                                                                                                                                     |
-| `Access denied for user 'root'`                 | The root password in step 4.4 is wrong                                                                                                                                                                                                                                                                                              |
-| `Missing environment variables: ...`            | Your `.env` is missing a value; compare it with `.env.example`                                                                                                                                                                                                                                                                      |
-| Browser shows `Database: down`                  | MySQL isn't running, or step 4.4 wasn't done                                                                                                                                                                                                                                                                                        |
-| `npm run format:check` fails in CI              | Run `npm run format`, then commit again                                                                                                                                                                                                                                                                                             |
-| Port 4000 or 5173 already in use                | Another `npm run dev` is still running; close that terminal                                                                                                                                                                                                                                                                         |
-| `Could not read package.json`                   | You are in the wrong folder. The terminal line must end with `NUST-Fruita>`; run `cd NUST-Fruita` first                                                                                                                                                                                                                             |
-| Forgot the MySQL root password                  | Open MySQL Workbench. Right-click your connection → **Edit Connection** shows the **User Name** (usually `root`). If the connection opens without asking for a password, run `ALTER USER CURRENT_USER() IDENTIFIED BY 'NewPassword1';` in a query tab to set a new one. If it asks for a password you don't know, ask Umar for help |
-| Where to keep my passwords                      | In a text file **outside** the `NUST-Fruita` folder (for example one folder up). Git only uploads files inside the project folder                                                                                                                                                                                                   |
+| Problem                                                             | Fix                                                                                                                                                                                                                                                                                                                                 |
+| ------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `'git'`, `'node'` or `'code'` is not recognized                     | Close PowerShell (and VS Code), open it again. If it still fails, reinstall the tool                                                                                                                                                                                                                                                |
+| `Get-Service *mysql*` shows `Stopped`                               | Open PowerShell **as Administrator** and run `Start-Service <name>` (use the name shown, for example `MySQL80`)                                                                                                                                                                                                                     |
+| `Access denied for user 'root'`                                     | The root password in step 4.4 is wrong                                                                                                                                                                                                                                                                                              |
+| `Missing environment variables: ...`                                | Your `.env` is missing a value; compare it with `.env.example`                                                                                                                                                                                                                                                                      |
+| Browser shows `Database: down`                                      | MySQL isn't running, or step 4.4 wasn't done                                                                                                                                                                                                                                                                                        |
+| `npm run format:check` fails in CI                                  | Run `npm run format`, then commit again                                                                                                                                                                                                                                                                                             |
+| Port 4000 or 5173 already in use                                    | Another `npm run dev` is still running; close that terminal                                                                                                                                                                                                                                                                         |
+| `Could not read package.json`                                       | You are in the wrong folder. The terminal line must end with `NUST-Fruita>`; run `cd NUST-Fruita` first                                                                                                                                                                                                                             |
+| Forgot the MySQL root password                                      | Open MySQL Workbench. Right-click your connection → **Edit Connection** shows the **User Name** (usually `root`). If the connection opens without asking for a password, run `ALTER USER CURRENT_USER() IDENTIFIED BY 'NewPassword1';` in a query tab to set a new one. If it asks for a password you don't know, ask Umar for help |
+| Where to keep my passwords                                          | In a text file **outside** the `NUST-Fruita` folder (for example one folder up). Git only uploads files inside the project folder                                                                                                                                                                                                   |
+| `You do not have the SUPER privilege and binary logging is enabled` | Run `npm run db:create-users` again (step C3), then `npm run db:reset`                                                                                                                                                                                                                                                              |
+| `... was changed after it was applied`                              | Someone edited an old migration file. Undo your edit with `git checkout -- db/migrations/<file>`; never edit a merged migration, add a new one                                                                                                                                                                                      |

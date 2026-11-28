@@ -18,6 +18,10 @@ One entry per phase (spec rule 8): what was built, what was tested, known issues
 
 - `server/test/health.test.js` (health ok, JSON 404).
 - Lint, format check and web build run locally.
+- CI green on PR #1 and on `main` after the merge.
+- Verified on Umar's laptop (2026-11-28): `db:create-users` created both accounts and databases with the right grants, `npm test` 2/2 passed, the browser shows "Hello FRUITA · API: ok · Database: ok".
+
+**Status:** P0 complete. Tehreem and Aimen invited to the repository; they set up their laptops by following the README.
 
 **Known issues**
 

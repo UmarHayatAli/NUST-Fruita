@@ -267,19 +267,19 @@ Then on GitHub:
 
 ## 7. Build phases and owners
 
-| Phase | Goal                                                                                       | Owner                                                              | Status                   |
-| ----- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------ | ------------------------ |
-| P0    | Repository, tooling, MySQL, CI                                                             | Umar                                                               | Done (waiting for merge) |
-| P1    | Full database: 17 tables, triggers, procedures, views, seed data, DB tests                 | All three (Umar builds; Tehreem and Aimen review their own tables) | Next                     |
-| P2    | Login, register, roles, layouts, forced password change; shared UI components              | Aimen                                                              |                          |
-| P3    | Shop, product page, admin products and categories, image upload                            | Tehreem                                                            |                          |
-| P4    | Addresses and cart (Aimen); checkout, place and cancel order, my orders (Umar)             | Aimen + Umar                                                       |                          |
-| P5    | Admin order handling, rider portal, delivery code, failed delivery                         | Umar                                                               |                          |
-| P6    | Admin users, riders, hostels (Aimen); slots, alerts, statistics (Umar); settings (Tehreem) | All three                                                          |                          |
-| P7    | Reviews and ratings (Tehreem); wishlist (Aimen)                                            | Tehreem + Aimen                                                    |                          |
-| P8    | Animated landing page (can start from week 4)                                              | Tehreem                                                            |                          |
-| P9    | Security checks, full tests, accessibility, performance                                    | All three                                                          |                          |
-| P10   | README, report, demo rehearsal                                                             | All three                                                          |                          |
+| Phase | Goal                                                                                       | Owner                                                              | Status               |
+| ----- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------ | -------------------- |
+| P0    | Repository, tooling, MySQL, CI                                                             | Umar                                                               | Done (merged, PR #1) |
+| P1    | Full database: 17 tables, triggers, procedures, views, seed data, DB tests                 | All three (Umar builds; Tehreem and Aimen review their own tables) | Next                 |
+| P2    | Login, register, roles, layouts, forced password change; shared UI components              | Aimen                                                              |                      |
+| P3    | Shop, product page, admin products and categories, image upload                            | Tehreem                                                            |                      |
+| P4    | Addresses and cart (Aimen); checkout, place and cancel order, my orders (Umar)             | Aimen + Umar                                                       |                      |
+| P5    | Admin order handling, rider portal, delivery code, failed delivery                         | Umar                                                               |                      |
+| P6    | Admin users, riders, hostels (Aimen); slots, alerts, statistics (Umar); settings (Tehreem) | All three                                                          |                      |
+| P7    | Reviews and ratings (Tehreem); wishlist (Aimen)                                            | Tehreem + Aimen                                                    |                      |
+| P8    | Animated landing page (can start from week 4)                                              | Tehreem                                                            |                      |
+| P9    | Security checks, full tests, accessibility, performance                                    | All three                                                          |                      |
+| P10   | README, report, demo rehearsal                                                             | All three                                                          |                      |
 
 Every phase ends with a checklist from spec section 15. A phase is finished only when its
 checklist passes, CI is green, and `docs/PROGRESS.md` is updated.
@@ -312,12 +312,15 @@ docs/      specification, decisions, progress
 
 ## 10. Troubleshooting
 
-| Problem                                         | Fix                                                                                                             |
-| ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
-| `'git'`, `'node'` or `'code'` is not recognized | Close PowerShell (and VS Code), open it again. If it still fails, reinstall the tool                            |
-| `Get-Service *mysql*` shows `Stopped`           | Open PowerShell **as Administrator** and run `Start-Service <name>` (use the name shown, for example `MySQL80`) |
-| `Access denied for user 'root'`                 | The root password in step 4.4 is wrong                                                                          |
-| `Missing environment variables: ...`            | Your `.env` is missing a value; compare it with `.env.example`                                                  |
-| Browser shows `Database: down`                  | MySQL isn't running, or step 4.4 wasn't done                                                                    |
-| `npm run format:check` fails in CI              | Run `npm run format`, then commit again                                                                         |
-| Port 4000 or 5173 already in use                | Another `npm run dev` is still running; close that terminal                                                     |
+| Problem                                         | Fix                                                                                                                                                                                                                                                                                                                                 |
+| ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `'git'`, `'node'` or `'code'` is not recognized | Close PowerShell (and VS Code), open it again. If it still fails, reinstall the tool                                                                                                                                                                                                                                                |
+| `Get-Service *mysql*` shows `Stopped`           | Open PowerShell **as Administrator** and run `Start-Service <name>` (use the name shown, for example `MySQL80`)                                                                                                                                                                                                                     |
+| `Access denied for user 'root'`                 | The root password in step 4.4 is wrong                                                                                                                                                                                                                                                                                              |
+| `Missing environment variables: ...`            | Your `.env` is missing a value; compare it with `.env.example`                                                                                                                                                                                                                                                                      |
+| Browser shows `Database: down`                  | MySQL isn't running, or step 4.4 wasn't done                                                                                                                                                                                                                                                                                        |
+| `npm run format:check` fails in CI              | Run `npm run format`, then commit again                                                                                                                                                                                                                                                                                             |
+| Port 4000 or 5173 already in use                | Another `npm run dev` is still running; close that terminal                                                                                                                                                                                                                                                                         |
+| `Could not read package.json`                   | You are in the wrong folder. The terminal line must end with `NUST-Fruita>`; run `cd NUST-Fruita` first                                                                                                                                                                                                                             |
+| Forgot the MySQL root password                  | Open MySQL Workbench. Right-click your connection → **Edit Connection** shows the **User Name** (usually `root`). If the connection opens without asking for a password, run `ALTER USER CURRENT_USER() IDENTIFIED BY 'NewPassword1';` in a query tab to set a new one. If it asks for a password you don't know, ask Umar for help |
+| Where to keep my passwords                      | In a text file **outside** the `NUST-Fruita` folder (for example one folder up). Git only uploads files inside the project folder                                                                                                                                                                                                   |

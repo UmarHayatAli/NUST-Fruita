@@ -1,0 +1,7 @@
+# Keep LF line endings in the repo so Windows and Linux (CI) agree.
+* text=auto eol=lf
+*.png binary
+*.webp binary
+*.jpg binary
+*.glb binary
+*.pdf binary
